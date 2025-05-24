@@ -28,7 +28,7 @@ const Testimonials: React.FC = () => {
       quote: "A barbearia tem um ambiente acolhedor e os produtos são de excelente qualidade. Sempre saio de lá me sentindo renovado e com visual impecável.",
       author: "Francisco Vieira",
       role: "Analista de Redes",
-      image: "/src/img/mega2.jpg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+      image: "https://raw.githubusercontent.com/Francisco-tads/Barbearia-premium/refs/heads/master/src/img/mega2.jpg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
     }
   ];
 
