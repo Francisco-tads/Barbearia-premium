@@ -52,14 +52,14 @@ const ProductCard: React.FC<ProductProps> = ({ image, name, price, rating, descr
 const Products: React.FC = () => {
   const products = [
     {
-      image: "https://github.com/Francisco-tads/Barbearia-premium/blob/master/src/img/Pomada%20Modeladora.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+      image: "https://raw.githubusercontent.com/Francisco-tads/Barbearia-premium/refs/heads/master/src/img/Pomada%20Modeladora.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
       name: "Pomada Modeladora",
       price: "R$ 49,90",
       rating: 5,
       description: "Pomada de fixação forte para criar penteados estruturados com acabamento natural."
     },
     {
-      image: "https://raw.githubusercontent.com/Francisco-tads/Barbearia-premium/refs/heads/master/src/img/spray-fixador.jpeg.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+      image: "https://raw.githubusercontent.com/Francisco-tads/Barbearia-premium/refs/heads/master/src/img/spray-fixador.jpg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
       name: "Spray fixador",
       price: "R$ 39,90",
       rating: 4,
