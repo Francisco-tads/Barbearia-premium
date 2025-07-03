@@ -127,8 +127,9 @@ const Haircuts: React.FC = () => {
                   src={item.image}
                   alt={item.title}
                   className="w-full h-full object-cover object-center"
+                  style={{ maxWidth: '100%', height: 'auto' }}
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-70"></div>
+                <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-50"></div>
                 <div className="absolute bottom-0 left-0 right-0 p-8 text-white">
                   <h3 className="text-2xl font-heading font-bold mb-2">{item.title}</h3>
                   <p className="text-gray-200">{item.description}</p>
