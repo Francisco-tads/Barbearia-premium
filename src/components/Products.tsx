@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { ShoppingBag, Star } from 'lucide-react';
 
 interface ProductProps {
@@ -50,7 +50,9 @@ const ProductCard: React.FC<ProductProps> = ({ image, name, price, rating, descr
 };
 
 const Products: React.FC = () => {
-  const products = [
+  const [showAll, setShowAll] = useState(false);
+
+  const allProducts = [
     {
       image: "https://raw.githubusercontent.com/Francisco-tads/Barbearia-premium/refs/heads/master/src/img/Pomada%20Modeladora.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
       name: "Pomada Modeladora",
@@ -78,8 +80,61 @@ const Products: React.FC = () => {
       price: "R$ 45,90",
       rating: 5,
       description: "Shampoo para cabelos masculinos que hidrata e fortalece, sem ressecar."
+    },
+    // Novos produtos
+    {
+      image: "https://images.pexels.com/photos/996329/pexels-photo-996329.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+      name: "Camiseta Premium",
+      price: "R$ 79,90",
+      rating: 5,
+      description: "Camiseta 100% algodão com logo da barbearia, conforto e estilo únicos."
+    },
+    {
+      image: "https://images.pexels.com/photos/1124465/pexels-photo-1124465.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+      name: "Boné Snapback",
+      price: "R$ 59,90",
+      rating: 4,
+      description: "Boné ajustável com bordado exclusivo, perfeito para completar seu visual."
+    },
+    {
+      image: "https://images.pexels.com/photos/4465124/pexels-photo-4465124.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+      name: "Óleo para Barba",
+      price: "R$ 35,90",
+      rating: 5,
+      description: "Óleo nutritivo que hidrata e dá brilho natural à barba, com fragrância masculina."
+    },
+    {
+      image: "https://images.pexels.com/photos/4465833/pexels-photo-4465833.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+      name: "Cera Modeladora",
+      price: "R$ 42,90",
+      rating: 4,
+      description: "Cera de alta performance para modelar e texturizar com fixação duradoura."
+    },
+    {
+      image: "https://images.pexels.com/photos/1040945/pexels-photo-1040945.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+      name: "Camiseta Vintage",
+      price: "R$ 69,90",
+      rating: 4,
+      description: "Camiseta com design retrô da barbearia, tecido macio e corte moderno."
+    },
+    {
+      image: "https://images.pexels.com/photos/1124466/pexels-photo-1124466.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+      name: "Boné Trucker",
+      price: "R$ 54,90",
+      rating: 5,
+      description: "Boné estilo trucker com tela traseira, ideal para o dia a dia com muito estilo."
     }
   ];
+
+  const displayedProducts = showAll ? allProducts : allProducts.slice(0, 4);
+
+  const handleShowMore = () => {
+    setShowAll(true);
+  };
+
+  const handleShowLess = () => {
+    setShowAll(false);
+  };
 
   return (
     <section id="products" className="section-container bg-gray-50">
@@ -87,12 +142,12 @@ const Products: React.FC = () => {
         <h2 className="section-title">Nossos Produtos</h2>
         <p className="text-gray-600 max-w-2xl mx-auto">
           Encontre os melhores produtos para cuidados masculinos. 
-          Selecionamos as melhores marcas para seu cabelo e barba.
+          Selecionamos as melhores marcas para seu cabelo e barba, além de roupas exclusivas.
         </p>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        {products.map((product, index) => (
+        {displayedProducts.map((product, index) => (
           <ProductCard
             key={index}
             image={product.image}
@@ -105,9 +160,15 @@ const Products: React.FC = () => {
       </div>
       
       <div className="text-center mt-10">
-        <a href="#" className="btn-secondary">
-          Ver todos os produtos
-        </a>
+        {!showAll ? (
+          <button onClick={handleShowMore} className="btn-secondary">
+            Ver todos os produtos
+          </button>
+        ) : (
+          <button onClick={handleShowLess} className="btn-secondary">
+            Ver menos produtos
+          </button>
+        )}
       </div>
     </section>
   );
