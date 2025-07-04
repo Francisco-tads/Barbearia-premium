@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, ShoppingBag, CreditCard, Banknote, Copy, Check } from 'lucide-react';
+import { X, ShoppingBag, CreditCard, Banknote, Copy, Check, AlertCircle } from 'lucide-react';
 
 interface CheckoutModalProps {
   isOpen: boolean;
@@ -23,6 +23,8 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose, product 
   });
   const [copied, setCopied] = useState(false);
   const [orderSubmitted, setOrderSubmitted] = useState(false);
+  const [errors, setErrors] = useState<{[key: string]: string}>({});
+  const [showValidationError, setShowValidationError] = useState(false);
 
   const pixNumber = '11991298838';
 
@@ -32,6 +34,19 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose, product 
       ...prev,
       [name]: value
     }));
+    
+    // Limpar erro do campo quando o usuário começar a digitar
+    if (errors[name]) {
+      setErrors(prev => ({
+        ...prev,
+        [name]: ''
+      }));
+    }
+    
+    // Esconder mensagem de erro geral
+    if (showValidationError) {
+      setShowValidationError(false);
+    }
   };
 
   const copyPixNumber = () => {
@@ -40,8 +55,52 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose, product 
     setTimeout(() => setCopied(false), 2000);
   };
 
+  const validateForm = () => {
+    const newErrors: {[key: string]: string} = {};
+
+    if (!formData.name.trim()) {
+      newErrors.name = 'Nome é obrigatório';
+    }
+
+    if (!formData.email.trim()) {
+      newErrors.email = 'Email é obrigatório';
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      newErrors.email = 'Email inválido';
+    }
+
+    if (!formData.phone.trim()) {
+      newErrors.phone = 'Telefone é obrigatório';
+    }
+
+    if (!formData.address.trim()) {
+      newErrors.address = 'Endereço é obrigatório';
+    }
+
+    if (!formData.city.trim()) {
+      newErrors.city = 'Cidade é obrigatória';
+    }
+
+    if (!formData.zipCode.trim()) {
+      newErrors.zipCode = 'CEP é obrigatório';
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Validar formulário
+    if (!validateForm()) {
+      setShowValidationError(true);
+      // Scroll para o primeiro erro
+      const firstErrorField = document.querySelector('.border-red-500');
+      if (firstErrorField) {
+        firstErrorField.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+      return;
+    }
     
     // Simular envio do pedido
     setOrderSubmitted(true);
@@ -81,6 +140,8 @@ Aguardo confirmação do pedido!`;
         zipCode: '',
         paymentMethod: 'pix'
       });
+      setErrors({});
+      setShowValidationError(false);
       onClose();
     }, 3000);
   };
@@ -134,6 +195,17 @@ Aguardo confirmação do pedido!`;
               </div>
             </div>
 
+            {/* Validation Error Alert */}
+            {showValidationError && (
+              <div className="mx-6 mt-6 p-4 bg-red-50 border border-red-200 rounded-lg flex items-center">
+                <AlertCircle className="h-5 w-5 text-red-500 mr-3 flex-shrink-0" />
+                <div>
+                  <h4 className="text-red-800 font-medium">Dados obrigatórios não preenchidos</h4>
+                  <p className="text-red-600 text-sm">Por favor, preencha todos os campos obrigatórios antes de continuar.</p>
+                </div>
+              </div>
+            )}
+
             {/* Form */}
             <form onSubmit={handleSubmit} className="p-6 space-y-6">
               {/* Dados Pessoais */}
@@ -150,9 +222,14 @@ Aguardo confirmação do pedido!`;
                       value={formData.name}
                       onChange={handleInputChange}
                       required
-                      className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
+                      className={`w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 ${
+                        errors.name ? 'border-red-500 bg-red-50' : 'border-gray-300'
+                      }`}
                       placeholder="Seu nome completo"
                     />
+                    {errors.name && (
+                      <p className="text-red-500 text-sm mt-1">{errors.name}</p>
+                    )}
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -164,9 +241,14 @@ Aguardo confirmação do pedido!`;
                       value={formData.email}
                       onChange={handleInputChange}
                       required
-                      className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
+                      className={`w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 ${
+                        errors.email ? 'border-red-500 bg-red-50' : 'border-gray-300'
+                      }`}
                       placeholder="seu@email.com"
                     />
+                    {errors.email && (
+                      <p className="text-red-500 text-sm mt-1">{errors.email}</p>
+                    )}
                   </div>
                   <div className="md:col-span-2">
                     <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -178,9 +260,14 @@ Aguardo confirmação do pedido!`;
                       value={formData.phone}
                       onChange={handleInputChange}
                       required
-                      className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
+                      className={`w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 ${
+                        errors.phone ? 'border-red-500 bg-red-50' : 'border-gray-300'
+                      }`}
                       placeholder="(11) 99999-9999"
                     />
+                    {errors.phone && (
+                      <p className="text-red-500 text-sm mt-1">{errors.phone}</p>
+                    )}
                   </div>
                 </div>
               </div>
@@ -199,9 +286,14 @@ Aguardo confirmação do pedido!`;
                       onChange={handleInputChange}
                       required
                       rows={3}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
+                      className={`w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 ${
+                        errors.address ? 'border-red-500 bg-red-50' : 'border-gray-300'
+                      }`}
                       placeholder="Rua, número, complemento, bairro"
                     />
+                    {errors.address && (
+                      <p className="text-red-500 text-sm mt-1">{errors.address}</p>
+                    )}
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
@@ -214,9 +306,14 @@ Aguardo confirmação do pedido!`;
                         value={formData.city}
                         onChange={handleInputChange}
                         required
-                        className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
+                        className={`w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 ${
+                          errors.city ? 'border-red-500 bg-red-50' : 'border-gray-300'
+                        }`}
                         placeholder="São Paulo"
                       />
+                      {errors.city && (
+                        <p className="text-red-500 text-sm mt-1">{errors.city}</p>
+                      )}
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -228,9 +325,14 @@ Aguardo confirmação do pedido!`;
                         value={formData.zipCode}
                         onChange={handleInputChange}
                         required
-                        className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
+                        className={`w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 ${
+                          errors.zipCode ? 'border-red-500 bg-red-50' : 'border-gray-300'
+                        }`}
                         placeholder="00000-000"
                       />
+                      {errors.zipCode && (
+                        <p className="text-red-500 text-sm mt-1">{errors.zipCode}</p>
+                      )}
                     </div>
                   </div>
                 </div>
